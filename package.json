@@ -1,0 +1,32 @@
+{
+  "name": "express-plumber",
+  "version": "1.0.0",
+  "description": "express framework utilities reducing boilerplate code",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agri-code/express-plumber.git"
+  },
+  "keywords": [
+    "express",
+    "framework",
+    "web",
+    "rest",
+    "restful",
+    "router",
+    "app",
+    "api"
+  ],
+  "author": "Agri Code <agricode@explant.eu> (https://explant.eu)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/agri-code/express-plumber/issues"
+  },
+  "homepage": "https://github.com/agri-code/express-plumber#readme",
+  "dependencies": {
+    "fs-readdir-recursive": "^1.1.0"
+  }
+}
