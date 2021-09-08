@@ -12,6 +12,13 @@ by rigorously imposing a convention to adhere to. It provides various functions
  and utitlies to facilitate rapid protoyping and development.
 
 ---
+## Implemented features
+
+- Loading of routes from individual files
+- Loading of middlewares from individual files
+- Prioritization of routes
+
+---
 
 ## Planned features
 
