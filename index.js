@@ -85,9 +85,14 @@ module.exports = {
             i++
 
             // Push it into the results
-            results.push({method: routeMethod.toLowerCase(), path: absolutePath, route})
+            results.push({
+                method: routeMethod.toLowerCase(),
+                path: absolutePath,
+                route,
+                priority: route.priority ? route.priority : 0
+            })
         })
-        return results
+        return results.sort((b, a) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
     },
 
     /**
@@ -106,7 +111,7 @@ module.exports = {
      */
     applyRoutes(appOrRouter, routes) {
         routes.forEach(routeItem => { // Use the routes on the appropriate methods
-            appOrRouter[routeItem.method](routeItem.route.path ? routeItem.route.path : routeItem.path, routeItem.route.middlewares ? routeItem.route.middlewares : [], routeItem.route.callback ? routeItem.route.callback : async (request, response, next) => {
+            appOrRouter[routeItem.method](routeItem.route.path ? routeItem.route.path : routeItem.path, routeItem.route.middlewares ? routeItem.route.middlewares : [], routeItem.route.callback ? routeItem.route.callback : async function defaultCallback(request, response, next) {
                 response.json({
                         message: `Default for ${
                         routeItem.path
@@ -124,7 +129,7 @@ module.exports = {
      * @returns {object} Plumber
      */
     loadAndApplyRoutes(appOrRouter, routesDirectory = '@/routes') {
-        const routes = this.loadRoutes(routesDirectory)
+        let routes = this.loadRoutes(routesDirectory)
         this.applyRoutes(appOrRouter, routes)
         return this
     },
@@ -152,7 +157,7 @@ module.exports = {
      * @returns {object|Array.<Function>} Object with properties or an array with middlewares
      * @see resolveRootAlias
      */
-     loadMiddlewares(libPath = '@/middlewares', exclusionList = ['index.js'], asArray = false) {
+    loadMiddlewares(libPath = '@/middlewares', exclusionList = ['index.js'], asArray = false) {
         libPath = this.resolveRootAlias(libPath)
         // Make sure the directory exists
         if (! fs.existsSync(libPath)) {
