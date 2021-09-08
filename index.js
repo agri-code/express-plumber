@@ -5,8 +5,8 @@ const recursiveRead = require('fs-readdir-recursive')
 module.exports = {
 
     /**
-     * Returns the application root directory based on the file of main entry code
-     * @returns {string} The application root directory
+     * Returns the application `cwd` (or the main code entry file)
+     * @returns {string} The application `cwd`
      */
     appRootDir() {
         return path.dirname(require.main.filename)
@@ -14,8 +14,8 @@ module.exports = {
 
     /**
      * Loads all routes from directory, see {@link resolveRootAlias resolveRootAlias}
-     * @param {string} routeDirectory Path to the directory containing the route files, defaults to '@/routes'
-     * @returns {{object|array}}} An array of objects suitable to apply to any express Router or application intance 
+     * @param {string} routeDirectory Path to the directory containing the route files, defaults to `@/routes`
+     * @returns {routeEntry} Route objects suitable to apply to any express Router or application instance by {@link applyRoutes}
      */
     loadRoutes(routeDirectory = '@/routes') {
         routeDirectory = this.resolveRootAlias(routeDirectory)
@@ -91,6 +91,14 @@ module.exports = {
     },
 
     /**
+     * @typedef routeEntry
+     * @type {object}
+     * @property {string} method Request method 
+     * @property {string?} path Route path that overrides the computed path altogether
+     * @property {callback} 
+     */
+
+    /**
      * Applies them to express application or router object
      * @param {object} appOrRouter 
      * @param {string} routesDirectory 
@@ -110,7 +118,7 @@ module.exports = {
     },
 
     /**
-     * Loads routes from directory and applies them to express application or router object, see {@link loadRoutes loadRoutes} and {@link applyRoutes applyRoutes}
+     * Loads routes from directory and applies them to express application or router object, see {@link loadRoutes} and {@link applyRoutes}
      * @param {object} appOrRouter Target express application or router
      * @param {String} routesDirectory Target directory, defaults to '@/routes'
      * @returns {object} Plumber
@@ -121,10 +129,12 @@ module.exports = {
         return this
     },
 
+
     /**
-     * Tries to resolve the '@/' alias to the directory of current main filename, aka the code entry point file
-     * @param {String} aliasPath that might or might not contain the '@/' alias
-     * @returns Resolved file path
+     * Tries to resolve the `@/` alias to the cwd of the process invoking `resolveRootAlias()`
+     * @param {string} aliasPath Relative path containing `@/` alias to subdirectories
+     * @returns {string} Resolved file or directory path
+     * @example const packageJsonPath = plumber.resolveRootAlias(`@/package.json`) // $HOME/src/express-plumber/package.json
      */
     resolveRootAlias(aliasPath) {
         if (aliasPath.includes('@/')) {
@@ -135,25 +145,26 @@ module.exports = {
     },
 
     /**
-     * Loads and returns an object or array of all middlewares in the given libPath
-     * @param {String} libPath Path to the middleware files
-     * @param {Array} exclusionList Array of file names including extension to exclude from the load process
-     * @param {Boolean} asArray Flag to return middlewares as an array instead of an object
-     * @returns Object or array with middlewares
+     * Loads and returns an object or array of all middlewares located at `libPath`
+     * @param {string} [libPath] Path to the middlewares directory, defaults to `@/middlewares`
+     * @param {Array.<string>} [exclusionList] Array of file names exclusions, defaults to `['index.js']`
+     * @param {Boolean} [asArray] Return middlewares as an array instead of an object, defaults to `false`
+     * @returns {object|Array.<Function>} Object with properties or an array with middlewares
      * @see resolveRootAlias
      */
-    loadMiddleware(libPath = '@/middlewares', exclusionList = ['index.js'], asArray) {
+     loadMiddlewares(libPath = '@/middlewares', exclusionList = ['index.js'], asArray = false) {
         libPath = this.resolveRootAlias(libPath)
         // Make sure the directory exists
         if (! fs.existsSync(libPath)) {
             throw new Error(`Could not find directory \`${libPath}\` containing the required files`)
-            return
         }
 
         // Get a list of files in the schemataDirectory
         const files = fs.readdirSync(libPath).filter(f => !exclusionList.includes(f))
 
         let returnObject
+
+        // Initialize the return object either as array or actual object, defaults to object
         if (asArray) {
             returnObject = []
         } else {
@@ -171,5 +182,15 @@ module.exports = {
             returnObject[middlewareFileName] = middleware
         })
         return returnObject
+    },
+
+    /**
+     * Loads and returns a project dependency
+     * @param {string} projectRelativePath The relative path in relation to the process `cwd`
+     * @returns {object|function} Loaded dependency
+     * @example const packageJson = plumber.require('@/package.json')
+     */
+    require(projectRelativePath) {
+        return require(this.resolveRootAlias(projectRelativePath))
     }
 }
