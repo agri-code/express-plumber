@@ -1,4 +1,4 @@
-# express-plumber
+# `express-plumber`
 
 Utility to 
 
@@ -13,16 +13,20 @@ by rigorously imposing a convention to adhere to. It provides various functions
 
 ---
 
-## Usage
+## Planned features
 
-### Quickstart
+- Auto-reloading of routes on file change
+
+---
+
+## Quickstart
 
 - Create the directories `routes/GET`
 - create the `index.js` file inside of it
 - paste the following skeleton into it:
 
 > ```javascript
-> const middlewares = require('express-plumber').loadMiddleware()
+> const middlewares = require('express-plumber').loadMiddlewares()
 > 
 > module.exports = {
 >     middlewares: [
@@ -94,7 +98,7 @@ Any middleware you write can be added to any route. Create a directory named `mi
 Now go back and modify `routes/GET/index.js` as follows:
 
 > ```javascript
-> const middlewares = require('express-plumber').loadMiddleware()
+> const middlewares = require('express-plumber').loadMiddlewares()
 > 
 > module.exports = {
 >     middlewares: [
@@ -130,8 +134,28 @@ Refresh [http://localhost:42000](http://localhost:42000) and you should see a ne
 >   "random": 0.7689725270201255
 > }
 
-
 ---
+
+## Utility functions
+
+### Load some other dependency
+
+> ```javascript
+> const plumber = require('express-plumber')
+> 
+> const packageDotJson = plumber.require('@/package.json')
+> console.log(packageDotJson)
+> ```
+
+Result: 
+
+```
+{
+    name: 'plumber-express',
+    version: '0.1.0',
+    [...]
+}
+ ```
 
 <!--
 
