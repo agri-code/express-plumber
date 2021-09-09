@@ -89,9 +89,11 @@ module.exports = {
                 method: routeMethod.toLowerCase(),
                 path: absolutePath,
                 route,
+                // Set the route's priority if set
                 priority: route.priority ? route.priority : 0
             })
         })
+        // Sort by priority
         return results.sort((b, a) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
     },
 
@@ -125,7 +127,7 @@ module.exports = {
     /**
      * Loads routes from directory and applies them to express application or router object, see {@link loadRoutes} and {@link applyRoutes}
      * @param {object} appOrRouter Target express application or router
-     * @param {String} routesDirectory Target directory, defaults to '@/routes'
+     * @param {string} routesDirectory Target directory, defaults to '@/routes'
      * @returns {object} Plumber
      */
     loadAndApplyRoutes(appOrRouter, routesDirectory = '@/routes') {
