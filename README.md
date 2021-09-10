@@ -167,7 +167,7 @@ Routes are organized by request method: `GET`, `POST`, `PUT`, `DELETE` and  `PAT
 | `GET /user`       | routes/GET/user/index.js      |  /user            |`false` |
 | `GET /post/1`     | routes/GET/post/id.js         |  /post/:id        |`false` |
 | `POST /post`      | routes/POST/post/index.js     |  /post            | `false` |
-| `GET /sso/ZaGe5bQUaD/WCM9CvEg` | routes/GET/sso/account/token.js | /sso/:account/:token | `true` |
+| `GET /sso/ZaGe5bQUaD/WCM9CvEg` | routes/GET/sso/account/token.js | /:sso/:account/:token | `true` |
 
 ---
 
