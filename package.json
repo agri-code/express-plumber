@@ -4,7 +4,7 @@
   "description": "express framework utilities reducing boilerplate code",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cd test && mocha all.js --exit --timeout 5000 --expose-internals"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,15 @@
   },
   "homepage": "https://github.com/agri-code/express-plumber#readme",
   "dependencies": {
+    "express": "^4.17.1",
     "fs-readdir-recursive": "^1.1.0"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.2",
+    "mocha": "^9.1.1"
   }
 }
